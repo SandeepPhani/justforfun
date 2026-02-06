@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ClickAndConfess</title>
+  <title>justforfun</title>
   <style>
     body {
       height: 100vh;
@@ -20,10 +20,12 @@
       padding: 40px;
       border-radius: 12px;
       box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      min-width: 320px;
     }
 
     h1 {
       margin-bottom: 30px;
+      color: darkblue;
       transition: 0.3s;
     }
 
@@ -32,26 +34,94 @@
       margin: 10px;
       font-size: 16px;
       cursor: pointer;
+      background-color: magenta;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #danceText {
+      margin-top: 20px;
+      font-size: 20px;
+      color: darkblue;
+      display: none;
+    }
+
+    .char {
+      display: inline-block;
+      animation: dance 0.6s ease-in-out infinite;
+    }
+
+    @keyframes dance {
+      0%   { transform: translateY(0) rotate(0deg); }
+      25%  { transform: translateY(-10px) rotate(-10deg); }
+      50%  { transform: translateY(0) rotate(10deg); }
+      75%  { transform: translateY(-5px) rotate(-5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    #noMessage {
+      color: darkblue;
+      font-size: 18px;
+      margin: 10px;
+      display: none;
     }
   </style>
 </head>
+
 <body onmousemove="superCrazy()">
 
   <div class="container">
     <h1 id="title">Are You Crazy?</h1>
 
-    <button onclick="alert('Yes, everyone knows that you are crazy!')">
-      Yes
-    </button>
+    <button onclick="yesClicked()">Yes</button>
 
-    <button id="noBtn" onclick="hideNo()" onfocus="hideNo()">
+    <button
+      id="noBtn"
+      onclick="handleNo()"
+      onfocus="handleNo()"
+      onmouseover="handleNo()"
+    >
       No
     </button>
+
+    <div id="noMessage">Don’t lie, crazy 😄</div>
+
+    <div id="danceText"></div>
   </div>
 
   <script>
-    function hideNo() {
-      document.getElementById("noBtn").style.display = "none";
+    let noTimeout;
+
+    function yesClicked() {
+      const text = "Yes, everyone knows that you are crazy!";
+      const container = document.getElementById("danceText");
+
+      container.innerHTML = "";
+      container.style.display = "block";
+
+      [...text].forEach((char, index) => {
+        const span = document.createElement("span");
+        span.innerText = char === " " ? "\u00A0" : char;
+        span.className = "char";
+        span.style.animationDelay = `${index * 0.05}s`;
+        container.appendChild(span);
+      });
+    }
+
+    function handleNo() {
+      const noBtn = document.getElementById("noBtn");
+      const msg = document.getElementById("noMessage");
+
+      clearTimeout(noTimeout);
+
+      noBtn.style.display = "none";
+      msg.style.display = "block";
+
+      noTimeout = setTimeout(() => {
+        msg.style.display = "none";
+        noBtn.style.display = "inline-block";
+      }, 2000);
     }
 
     function superCrazy() {
