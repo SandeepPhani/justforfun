@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClickAndConfess</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      transition: 0.3s;
+    }
+
+    button {
+      padding: 12px 30px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body onmousemove="superCrazy()">
+
+  <div class="container">
+    <h1 id="title">Are You Crazy?</h1>
+
+    <button onclick="alert('Yes, everyone knows that you are crazy!')">
+      Yes
+    </button>
+
+    <button id="noBtn" onclick="hideNo()" onfocus="hideNo()">
+      No
+    </button>
+  </div>
+
+  <script>
+    function hideNo() {
+      document.getElementById("noBtn").style.display = "none";
+    }
+
+    function superCrazy() {
+      document.getElementById("title").innerText = "I'm Super Crazy";
+    }
+  </script>
+
+</body>
+</html>
