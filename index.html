@@ -78,7 +78,7 @@
     to { transform: translateY(-12px) rotate(8deg); }
   }
 
-  /* Right to left movement */
+  /* Right to left slide */
   .slide {
     animation: slideRL 2s linear forwards;
   }
@@ -95,19 +95,14 @@
 <div class="container">
   <h1 id="question">Are You Crazy?</h1>
 
-  <!-- TOP NO -->
   <div id="topNo" class="top-no"></div>
-
-  <!-- YES TEXT -->
   <div id="yesText" class="yes-text"></div>
 
-  <!-- BUTTONS -->
   <div id="buttons">
     <button id="yesBtn" onclick="handleYes()">Yes</button>
     <button id="noBtn" onclick="handleNo()">No</button>
   </div>
 
-  <!-- BOTTOM NO (below buttons) -->
   <div id="bottomNo" class="bottom-no"></div>
 </div>
 
@@ -123,7 +118,7 @@ function handleYes() {
   document.getElementById("bottomNo").innerHTML = "";
 
   const yesText = document.getElementById("yesText");
-  yesText.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
+  yesText.innerHTML = wrapChars("Yes, everyone knows that you are crazy!", true);
   yesText.className = "yes-text dance";
 
   document.getElementById("buttons").style.display = "none";
@@ -135,30 +130,35 @@ function handleYes() {
 function handleNo() {
   clearTimeout(resetTimer);
 
-  // TOP sliding text
-  const topNo = document.getElementById("topNo");
-  topNo.innerText = "Don't lie crazy";
-  topNo.className = "top-no slide";
+  document.getElementById("noBtn").style.display = "none";
 
-  // BOTTOM dancing characters
+  const topNo = document.getElementById("topNo");
   const bottomNo = document.getElementById("bottomNo");
+
+  // Reset animation
+  topNo.className = "top-no";
+  topNo.innerText = "Don't lie crazy";
+  void topNo.offsetWidth; // force reflow
+  topNo.classList.add("slide");
+
   bottomNo.innerHTML = wrapChars("Don't lie crazy", true);
   bottomNo.className = "bottom-no dance";
 }
 
-/* Reset everything */
+/* Reset */
 function resetAll() {
   document.getElementById("question").style.display = "block";
   document.getElementById("topNo").innerHTML = "";
   document.getElementById("bottomNo").innerHTML = "";
   document.getElementById("yesText").innerHTML = "";
   document.getElementById("buttons").style.display = "block";
+  document.getElementById("noBtn").style.display = "inline-block";
 }
 
-/* Wrap characters with staggered delay */
+/* Helper */
 function wrapChars(text, stagger = false) {
   return text.split("").map((c, i) => {
-    const delay = stagger ? `style="animation-delay:${i * 0.05}s"` : "";
+    const delay = stagger ? `style="animation-delay:${i * 0.06}s"` : "";
     return `<span ${delay}>${c === " " ? "&nbsp;" : c}</span>`;
   }).join("");
 }
