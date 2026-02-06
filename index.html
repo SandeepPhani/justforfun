@@ -45,7 +45,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #0b2d6b;
-    margin-top: 10px;
+    margin-top: 12px;
     min-height: 30px;
   }
 
@@ -67,15 +67,15 @@
     color: white;
   }
 
-  /* Dance animation */
+  /* Dancing characters */
   .dance span {
     display: inline-block;
-    animation: dance 0.5s infinite alternate;
+    animation: dance 0.6s infinite alternate;
   }
 
   @keyframes dance {
     from { transform: translateY(0) rotate(0deg); }
-    to { transform: translateY(-10px) rotate(6deg); }
+    to { transform: translateY(-12px) rotate(8deg); }
   }
 
   /* Right to left movement */
@@ -95,27 +95,29 @@
 <div class="container">
   <h1 id="question">Are You Crazy?</h1>
 
-  <!-- Top NO text -->
+  <!-- TOP NO -->
   <div id="topNo" class="top-no"></div>
 
-  <!-- YES text -->
+  <!-- YES TEXT -->
   <div id="yesText" class="yes-text"></div>
 
-  <!-- Bottom NO text -->
-  <div id="bottomNo" class="bottom-no"></div>
+  <!-- BUTTONS -->
+  <div id="buttons">
+    <button id="yesBtn" onclick="handleYes()">Yes</button>
+    <button id="noBtn" onclick="handleNo()">No</button>
+  </div>
 
-  <button id="yesBtn" onclick="handleYes()">Yes</button>
-  <button id="noBtn" onclick="handleNo()">No</button>
+  <!-- BOTTOM NO (below buttons) -->
+  <div id="bottomNo" class="bottom-no"></div>
 </div>
 
 <script>
-let resetTimer = null;
+let resetTimer;
 
 /* YES */
 function handleYes() {
   clearTimeout(resetTimer);
 
-  // Hide question & NO texts
   document.getElementById("question").style.display = "none";
   document.getElementById("topNo").innerHTML = "";
   document.getElementById("bottomNo").innerHTML = "";
@@ -124,9 +126,7 @@ function handleYes() {
   yesText.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
   yesText.className = "yes-text dance";
 
-  // Hide buttons
-  document.getElementById("yesBtn").style.display = "none";
-  document.getElementById("noBtn").style.display = "none";
+  document.getElementById("buttons").style.display = "none";
 
   resetTimer = setTimeout(resetAll, 5000);
 }
@@ -135,33 +135,32 @@ function handleYes() {
 function handleNo() {
   clearTimeout(resetTimer);
 
-  // TOP text (slide)
+  // TOP sliding text
   const topNo = document.getElementById("topNo");
   topNo.innerText = "Don't lie crazy";
   topNo.className = "top-no slide";
 
-  // BOTTOM text (dance every character)
+  // BOTTOM dancing characters
   const bottomNo = document.getElementById("bottomNo");
-  bottomNo.innerHTML = wrapChars("Don't lie crazy");
+  bottomNo.innerHTML = wrapChars("Don't lie crazy", true);
   bottomNo.className = "bottom-no dance";
 }
 
-/* Reset */
+/* Reset everything */
 function resetAll() {
   document.getElementById("question").style.display = "block";
   document.getElementById("topNo").innerHTML = "";
   document.getElementById("bottomNo").innerHTML = "";
   document.getElementById("yesText").innerHTML = "";
-
-  document.getElementById("yesBtn").style.display = "inline-block";
-  document.getElementById("noBtn").style.display = "inline-block";
+  document.getElementById("buttons").style.display = "block";
 }
 
-/* Helper */
-function wrapChars(text) {
-  return text.split("").map(c =>
-    `<span>${c === " " ? "&nbsp;" : c}</span>`
-  ).join("");
+/* Wrap characters with staggered delay */
+function wrapChars(text, stagger = false) {
+  return text.split("").map((c, i) => {
+    const delay = stagger ? `style="animation-delay:${i * 0.05}s"` : "";
+    return `<span ${delay}>${c === " " ? "&nbsp;" : c}</span>`;
+  }).join("");
 }
 </script>
 
