@@ -14,25 +14,37 @@
     align-items: center;
     font-family: Arial, sans-serif;
     background: #f2f2f2;
-    overflow: hidden;
+    padding: 20px;
   }
 
   .container {
     text-align: center;
     background: white;
-    padding: 30px 40px;
+    padding: 25px 30px;
     border-radius: 14px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    max-width: 360px;
+    width: 100%;
+    overflow: hidden;
   }
 
   h1 {
     color: #0b2d6b;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
+  }
+
+  #noMessage, #yesMessage {
+    min-height: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0b2d6b;
+    margin-bottom: 10px;
+    white-space: nowrap;
   }
 
   button {
-    padding: 12px 28px;
-    margin: 10px;
+    padding: 12px 26px;
+    margin: 8px;
     font-size: 16px;
     cursor: pointer;
     border: none;
@@ -41,6 +53,7 @@
     color: white;
   }
 
+  /* Dancing characters */
   .dance span {
     display: inline-block;
     animation: dance 0.5s infinite alternate;
@@ -48,74 +61,84 @@
 
   @keyframes dance {
     from { transform: translateY(0) rotate(0deg); }
-    to { transform: translateY(-12px) rotate(8deg); }
+    to { transform: translateY(-10px) rotate(6deg); }
   }
 
-  #message {
-    font-size: 20px;
-    font-weight: bold;
-    color: #0b2d6b;
-    margin-top: 10px;
+  /* Right to left movement */
+  .slide {
+    animation: slideRL 1.5s ease-out forwards;
+  }
+
+  @keyframes slideRL {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
   }
 </style>
 </head>
 
-<body onmousemove="superCrazy()">
+<body>
 
 <div class="container">
   <h1 id="title">Are You Crazy?</h1>
 
+  <div id="noMessage"></div>
+  <div id="yesMessage"></div>
+
   <button id="yesBtn" onclick="handleYes()">Yes</button>
   <button id="noBtn" onclick="handleNo()" onfocus="handleNo()">No</button>
-
-  <div id="message"></div>
 </div>
 
 <script>
-let noActive = false;
-
-function superCrazy() {
-  document.getElementById("title").innerText = "I'm Super Crazy";
-}
+let noTimer = null;
+let yesTimer = null;
 
 /* YES */
 function handleYes() {
-  const msg = document.getElementById("message");
-  const title = document.getElementById("title");
+  clearTimers();
 
-  // Clear NO text if present
-  msg.innerHTML = "";
-  noActive = false;
+  const noMsg = document.getElementById("noMessage");
+  const yesMsg = document.getElementById("yesMessage");
 
-  title.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
-  title.classList.add("dance");
+  // Hide NO text immediately
+  noMsg.innerHTML = "";
+  noMsg.className = "";
+
+  yesMsg.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
+  yesMsg.classList.add("dance");
 
   toggleButtons(false);
 
-  setTimeout(() => {
-    title.classList.remove("dance");
-    title.innerText = "Are You Crazy?";
+  yesTimer = setTimeout(() => {
+    yesMsg.className = "";
+    yesMsg.innerHTML = "";
+    document.getElementById("title").innerText = "Are You Crazy?";
     toggleButtons(true);
-  }, 3000);
+  }, 5000);
 }
 
 /* NO */
 function handleNo() {
-  if (noActive) return;
-  noActive = true;
+  clearTimers();
 
-  const msg = document.getElementById("message");
+  const noMsg = document.getElementById("noMessage");
   const noBtn = document.getElementById("noBtn");
 
   noBtn.style.display = "none";
 
-  msg.innerHTML = wrapChars("Don't lie crazy");
-  msg.classList.add("dance");
+  noMsg.innerHTML = wrapChars("Don't lie crazy");
+  noMsg.className = "dance slide";
 
-  // Stop dancing after 2 seconds (text stays)
+  // Stop dancing after 2 seconds
   setTimeout(() => {
-    msg.classList.remove("dance");
+    noMsg.classList.remove("dance");
   }, 2000);
+
+  // Hide NO text and show button after 5 seconds
+  noTimer = setTimeout(() => {
+    noMsg.className = "";
+    noMsg.innerHTML = "";
+    noBtn.style.display = "inline-block";
+  }, 5000);
 }
 
 /* Helpers */
@@ -128,6 +151,11 @@ function wrapChars(text) {
   return text.split("").map(c =>
     `<span>${c === " " ? "&nbsp;" : c}</span>`
   ).join("");
+}
+
+function clearTimers() {
+  clearTimeout(noTimer);
+  clearTimeout(yesTimer);
 }
 </script>
 
