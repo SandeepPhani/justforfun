@@ -1,138 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>justforfun</title>
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Are You Crazy?</title>
 
-    .container {
-      text-align: center;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-      min-width: 320px;
-    }
+<style>
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    overflow: hidden;
+  }
 
-    h1 {
-      margin-bottom: 30px;
-      color: darkblue;
-    }
+  .container {
+    text-align: center;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
 
-    button {
-      padding: 12px 30px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #c23abf; /* soft magenta */
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
+  h1 {
+    color: #0b2d6b;
+    margin-bottom: 25px;
+  }
 
-    #textBox {
-      font-size: 20px;
-      color: darkblue;
-      margin-top: 20px;
-      display: none;
-    }
+  button {
+    padding: 12px 28px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background: #c04bb5;
+    color: white;
+  }
 
-    .dance-all {
-      animation: danceAll 0.6s ease-in-out infinite;
-    }
+  .dance span {
+    display: inline-block;
+    animation: dance 0.5s infinite alternate;
+  }
 
-    @keyframes danceAll {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
+  @keyframes dance {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-12px) rotate(8deg); }
+  }
 
-    .char {
-      display: inline-block;
-      animation: danceChar 0.6s ease-in-out infinite;
-    }
-
-    @keyframes danceChar {
-      0%   { transform: translateY(0) rotate(0deg); }
-      50%  { transform: translateY(-8px) rotate(10deg); }
-      100% { transform: translateY(0) rotate(0deg); }
-    }
-  </style>
+  #message {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0b2d6b;
+    margin-top: 10px;
+  }
+</style>
 </head>
 
-<body>
+<body onmousemove="superCrazy()">
 
-  <div class="container">
-    <h1 id="title">Are You Crazy?</h1>
+<div class="container">
+  <h1 id="title">Are You Crazy?</h1>
 
-    <button id="yesBtn" onclick="yesClicked()">Yes</button>
-    <button id="noBtn" onclick="noClicked()" onfocus="noClicked()">No</button>
+  <button id="yesBtn" onclick="handleYes()">Yes</button>
+  <button id="noBtn" onclick="handleNo()" onfocus="handleNo()">No</button>
 
-    <div id="textBox"></div>
-  </div>
+  <div id="message"></div>
+</div>
 
-  <script>
-    function resetUI() {
-      document.getElementById("textBox").style.display = "none";
-      document.getElementById("textBox").innerHTML = "";
-      document.getElementById("yesBtn").style.display = "inline-block";
-      document.getElementById("noBtn").style.display = "inline-block";
-      document.getElementById("title").innerText = "Are You Crazy?";
-    }
+<script>
+let noActive = false;
 
-    function yesClicked() {
-      const yesBtn = document.getElementById("yesBtn");
-      const noBtn = document.getElementById("noBtn");
-      const box = document.getElementById("textBox");
+function superCrazy() {
+  document.getElementById("title").innerText = "I'm Super Crazy";
+}
 
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
+/* YES */
+function handleYes() {
+  const msg = document.getElementById("message");
+  const title = document.getElementById("title");
 
-      box.innerText = "Yes, everyone knows that you are crazy!";
-      box.className = "dance-all";
-      box.style.display = "block";
+  // Clear NO text if present
+  msg.innerHTML = "";
+  noActive = false;
 
-      setTimeout(() => {
-        box.className = "";
-        resetUI();
-      }, 3000);
-    }
+  title.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
+  title.classList.add("dance");
 
-    function noClicked() {
-      const yesBtn = document.getElementById("yesBtn");
-      const noBtn = document.getElementById("noBtn");
-      const box = document.getElementById("textBox");
+  toggleButtons(false);
 
-      yesBtn.style.display = "none";
-      noBtn.style.display = "none";
+  setTimeout(() => {
+    title.classList.remove("dance");
+    title.innerText = "Are You Crazy?";
+    toggleButtons(true);
+  }, 3000);
+}
 
-      const text = "Don’t lie, crazy 😄";
-      box.innerHTML = "";
-      box.style.display = "block";
+/* NO */
+function handleNo() {
+  if (noActive) return;
+  noActive = true;
 
-      [...text].forEach((char, i) => {
-        const span = document.createElement("span");
-        span.textContent = char === " " ? "\u00A0" : char;
-        span.className = "char";
-        span.style.animationDelay = `${i * 0.05}s`;
-        box.appendChild(span);
-      });
+  const msg = document.getElementById("message");
+  const noBtn = document.getElementById("noBtn");
 
-      setTimeout(() => {
-        box.innerText = text; // stop dancing
-        resetUI();
-      }, 2000);
-    }
-  </script>
+  noBtn.style.display = "none";
+
+  msg.innerHTML = wrapChars("Don't lie crazy");
+  msg.classList.add("dance");
+
+  // Stop dancing after 2 seconds (text stays)
+  setTimeout(() => {
+    msg.classList.remove("dance");
+  }, 2000);
+}
+
+/* Helpers */
+function toggleButtons(show) {
+  document.getElementById("yesBtn").style.display = show ? "inline-block" : "none";
+  document.getElementById("noBtn").style.display = show ? "inline-block" : "none";
+}
+
+function wrapChars(text) {
+  return text.split("").map(c =>
+    `<span>${c === " " ? "&nbsp;" : c}</span>`
+  ).join("");
+}
+</script>
 
 </body>
 </html>
