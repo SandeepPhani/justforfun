@@ -23,7 +23,7 @@
     padding: 25px 30px;
     border-radius: 14px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    max-width: 360px;
+    max-width: 380px;
     width: 100%;
     overflow: hidden;
   }
@@ -33,13 +33,27 @@
     margin-bottom: 10px;
   }
 
-  #noMessage, #yesMessage {
-    min-height: 50px;
+  .top-no {
     font-size: 18px;
     font-weight: bold;
     color: #0b2d6b;
-    margin-bottom: 10px;
     white-space: nowrap;
+    margin-bottom: 10px;
+  }
+
+  .bottom-no {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0b2d6b;
+    margin-top: 10px;
+    min-height: 30px;
+  }
+
+  .yes-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0b2d6b;
+    min-height: 50px;
   }
 
   button {
@@ -53,7 +67,7 @@
     color: white;
   }
 
-  /* Dancing characters */
+  /* Dance animation */
   .dance span {
     display: inline-block;
     animation: dance 0.5s infinite alternate;
@@ -66,7 +80,7 @@
 
   /* Right to left movement */
   .slide {
-    animation: slideRL 1.5s ease-out forwards;
+    animation: slideRL 2s linear forwards;
   }
 
   @keyframes slideRL {
@@ -79,83 +93,75 @@
 <body>
 
 <div class="container">
-  <h1 id="title">Are You Crazy?</h1>
+  <h1 id="question">Are You Crazy?</h1>
 
-  <div id="noMessage"></div>
-  <div id="yesMessage"></div>
+  <!-- Top NO text -->
+  <div id="topNo" class="top-no"></div>
+
+  <!-- YES text -->
+  <div id="yesText" class="yes-text"></div>
+
+  <!-- Bottom NO text -->
+  <div id="bottomNo" class="bottom-no"></div>
 
   <button id="yesBtn" onclick="handleYes()">Yes</button>
-  <button id="noBtn" onclick="handleNo()" onfocus="handleNo()">No</button>
+  <button id="noBtn" onclick="handleNo()">No</button>
 </div>
 
 <script>
-let noTimer = null;
-let yesTimer = null;
+let resetTimer = null;
 
 /* YES */
 function handleYes() {
-  clearTimers();
+  clearTimeout(resetTimer);
 
-  const noMsg = document.getElementById("noMessage");
-  const yesMsg = document.getElementById("yesMessage");
+  // Hide question & NO texts
+  document.getElementById("question").style.display = "none";
+  document.getElementById("topNo").innerHTML = "";
+  document.getElementById("bottomNo").innerHTML = "";
 
-  // Hide NO text immediately
-  noMsg.innerHTML = "";
-  noMsg.className = "";
+  const yesText = document.getElementById("yesText");
+  yesText.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
+  yesText.className = "yes-text dance";
 
-  yesMsg.innerHTML = wrapChars("Yes, everyone knows that you are crazy!");
-  yesMsg.classList.add("dance");
+  // Hide buttons
+  document.getElementById("yesBtn").style.display = "none";
+  document.getElementById("noBtn").style.display = "none";
 
-  toggleButtons(false);
-
-  yesTimer = setTimeout(() => {
-    yesMsg.className = "";
-    yesMsg.innerHTML = "";
-    document.getElementById("title").innerText = "Are You Crazy?";
-    toggleButtons(true);
-  }, 5000);
+  resetTimer = setTimeout(resetAll, 5000);
 }
 
 /* NO */
 function handleNo() {
-  clearTimers();
+  clearTimeout(resetTimer);
 
-  const noMsg = document.getElementById("noMessage");
-  const noBtn = document.getElementById("noBtn");
+  // TOP text (slide)
+  const topNo = document.getElementById("topNo");
+  topNo.innerText = "Don't lie crazy";
+  topNo.className = "top-no slide";
 
-  noBtn.style.display = "none";
-
-  noMsg.innerHTML = wrapChars("Don't lie crazy");
-  noMsg.className = "dance slide";
-
-  // Stop dancing after 2 seconds
-  setTimeout(() => {
-    noMsg.classList.remove("dance");
-  }, 2000);
-
-  // Hide NO text and show button after 5 seconds
-  noTimer = setTimeout(() => {
-    noMsg.className = "";
-    noMsg.innerHTML = "";
-    noBtn.style.display = "inline-block";
-  }, 5000);
+  // BOTTOM text (dance every character)
+  const bottomNo = document.getElementById("bottomNo");
+  bottomNo.innerHTML = wrapChars("Don't lie crazy");
+  bottomNo.className = "bottom-no dance";
 }
 
-/* Helpers */
-function toggleButtons(show) {
-  document.getElementById("yesBtn").style.display = show ? "inline-block" : "none";
-  document.getElementById("noBtn").style.display = show ? "inline-block" : "none";
+/* Reset */
+function resetAll() {
+  document.getElementById("question").style.display = "block";
+  document.getElementById("topNo").innerHTML = "";
+  document.getElementById("bottomNo").innerHTML = "";
+  document.getElementById("yesText").innerHTML = "";
+
+  document.getElementById("yesBtn").style.display = "inline-block";
+  document.getElementById("noBtn").style.display = "inline-block";
 }
 
+/* Helper */
 function wrapChars(text) {
   return text.split("").map(c =>
     `<span>${c === " " ? "&nbsp;" : c}</span>`
   ).join("");
-}
-
-function clearTimers() {
-  clearTimeout(noTimer);
-  clearTimeout(yesTimer);
 }
 </script>
 
