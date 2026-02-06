@@ -26,7 +26,6 @@
     h1 {
       margin-bottom: 30px;
       color: darkblue;
-      transition: 0.3s;
     }
 
     button {
@@ -34,78 +33,109 @@
       margin: 10px;
       font-size: 16px;
       cursor: pointer;
-      background-color: magenta;
+      background-color: #c23abf; /* soft magenta */
       color: white;
       border: none;
       border-radius: 6px;
     }
 
-    #danceText {
-      margin-top: 20px;
+    #textBox {
       font-size: 20px;
       color: darkblue;
+      margin-top: 20px;
       display: none;
+    }
+
+    .dance-all {
+      animation: danceAll 0.6s ease-in-out infinite;
+    }
+
+    @keyframes danceAll {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
     }
 
     .char {
       display: inline-block;
-      animation: dance 0.6s ease-in-out infinite;
+      animation: danceChar 0.6s ease-in-out infinite;
     }
 
-    @keyframes dance {
+    @keyframes danceChar {
       0%   { transform: translateY(0) rotate(0deg); }
-      25%  { transform: translateY(-10px) rotate(-10deg); }
-      50%  { transform: translateY(0) rotate(10deg); }
-      75%  { transform: translateY(-5px) rotate(-5deg); }
+      50%  { transform: translateY(-8px) rotate(10deg); }
       100% { transform: translateY(0) rotate(0deg); }
-    }
-
-    #noMessage {
-      color: darkblue;
-      font-size: 18px;
-      margin: 10px;
-      display: none;
     }
   </style>
 </head>
 
-<body onmousemove="superCrazy()">
+<body>
 
   <div class="container">
     <h1 id="title">Are You Crazy?</h1>
 
-    <button onclick="yesClicked()">Yes</button>
+    <button id="yesBtn" onclick="yesClicked()">Yes</button>
+    <button id="noBtn" onclick="noClicked()" onfocus="noClicked()">No</button>
 
-    <button
-      id="noBtn"
-      onclick="handleNo()"
-      onfocus="handleNo()"
-      onmouseover="handleNo()"
-    >
-      No
-    </button>
-
-    <div id="noMessage">Don’t lie, crazy 😄</div>
-
-    <div id="danceText"></div>
+    <div id="textBox"></div>
   </div>
 
   <script>
-    let noTimeout;
+    function resetUI() {
+      document.getElementById("textBox").style.display = "none";
+      document.getElementById("textBox").innerHTML = "";
+      document.getElementById("yesBtn").style.display = "inline-block";
+      document.getElementById("noBtn").style.display = "inline-block";
+      document.getElementById("title").innerText = "Are You Crazy?";
+    }
 
     function yesClicked() {
-      const text = "Yes, everyone knows that you are crazy!";
-      const container = document.getElementById("danceText");
+      const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+      const box = document.getElementById("textBox");
 
-      container.innerHTML = "";
-      container.style.display = "block";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
 
-      [...text].forEach((char, index) => {
+      box.innerText = "Yes, everyone knows that you are crazy!";
+      box.className = "dance-all";
+      box.style.display = "block";
+
+      setTimeout(() => {
+        box.className = "";
+        resetUI();
+      }, 3000);
+    }
+
+    function noClicked() {
+      const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+      const box = document.getElementById("textBox");
+
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+
+      const text = "Don’t lie, crazy 😄";
+      box.innerHTML = "";
+      box.style.display = "block";
+
+      [...text].forEach((char, i) => {
         const span = document.createElement("span");
-        span.innerText = char === " " ? "\u00A0" : char;
+        span.textContent = char === " " ? "\u00A0" : char;
         span.className = "char";
-        span.style.animationDelay = `${index * 0.05}s`;
-        container.appendChild(span);
+        span.style.animationDelay = `${i * 0.05}s`;
+        box.appendChild(span);
+      });
+
+      setTimeout(() => {
+        box.innerText = text; // stop dancing
+        resetUI();
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>        container.appendChild(span);
       });
     }
 
