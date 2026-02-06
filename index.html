@@ -135,29 +135,4 @@
   </script>
 
 </body>
-</html>        container.appendChild(span);
-      });
-    }
-
-    function handleNo() {
-      const noBtn = document.getElementById("noBtn");
-      const msg = document.getElementById("noMessage");
-
-      clearTimeout(noTimeout);
-
-      noBtn.style.display = "none";
-      msg.style.display = "block";
-
-      noTimeout = setTimeout(() => {
-        msg.style.display = "none";
-        noBtn.style.display = "inline-block";
-      }, 2000);
-    }
-
-    function superCrazy() {
-      document.getElementById("title").innerText = "I'm Super Crazy";
-    }
-  </script>
-
-</body>
 </html>
